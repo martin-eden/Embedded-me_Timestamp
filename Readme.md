@@ -1,10 +1,12 @@
 # What
 
-(2025-03)
+(2025-03, 2025-08)
 
-Time interval definition and management for ATmega328/P.
+Time interval definition and management.
 
-We use fancy record to track time:
+Base is second. We scale it to kilo, milli and micro.
+
+We use record with four fields. Each field can hold value from 0 to 999.
 
 ```
   KiloS [0, 999]
@@ -13,14 +15,11 @@ We use fancy record to track time:
   MicroS
 ```
 
-So yes, four words with values relation of 1000.
-
-Core functions of course **Add()**, **Subtract()** and **Compare()**.
+Core functions of course comparison functions plus **Add()** and **Subtract()**.
 
 (
   Implementation is typical long arithmetic but code is copy-paste.
-  We don't want to provide array alias for record just for shorter
-  source code of implementation.
+  Data structure for "normal" long numbers uses array to access digits.
 )
 
 ## Code

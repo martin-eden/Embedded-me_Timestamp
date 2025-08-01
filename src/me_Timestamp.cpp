@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-03-03
+  Last mod.: 2025-08-01
 */
 
 /*
@@ -14,95 +14,170 @@
 
 using namespace me_Timestamp;
 
-// Compare: -1 for less, 1 for greater, 0 for equal
-TSint_1 me_Timestamp::Compare(
+const TUint_2 MaxFieldValue = 999;
+
+/*
+  True when timestamps are equal
+*/
+TBool me_Timestamp::AreEqual(
+  TTimestamp A,
+  TTimestamp B
+)
+{
+  return
+    (A.KiloS == B.KiloS) &&
+    (A.S == B.S) &&
+    (A.MilliS == B.MilliS) &&
+    (A.MicroS == B.MicroS);
+}
+
+/*
+  True when timestamp is less
+*/
+TBool me_Timestamp::IsLess(
   TTimestamp A,
   TTimestamp B
 )
 {
   if (A.KiloS < B.KiloS)
-    return -1;
-
-  if (A.KiloS > B.KiloS)
-    return 1;
+    return true;
 
   if (A.S < B.S)
-    return -1;
-
-  if (A.S > B.S)
-    return 1;
+    return true;
 
   if (A.MilliS < B.MilliS)
-    return -1;
-
-  if (A.MilliS > B.MilliS)
-    return 1;
+    return true;
 
   if (A.MicroS < B.MicroS)
-    return -1;
+    return true;
 
-  if (A.MicroS > B.MicroS)
-    return 1;
+  return false;
+}
 
-  return 0;
+/*
+  True when timestamp is greater
+*/
+TBool me_Timestamp::IsGreater(
+  TTimestamp A,
+  TTimestamp B
+)
+{
+  return IsLess(B, A);
+}
+
+/*
+  True when timestamp is less or equal
+*/
+TBool me_Timestamp::IsLessOrEqual(
+  TTimestamp A,
+  TTimestamp B
+)
+{
+  return
+    IsLess(A, B) ||
+    AreEqual(A, B);
+}
+
+/*
+  True when timestamp is greater or equal
+*/
+TBool me_Timestamp::IsGreaterOrEqual(
+  TTimestamp A,
+  TTimestamp B
+)
+{
+  return
+    IsGreater(A, B) ||
+    AreEqual(A, B);
+}
+
+/*
+  Check that timestamp data is valid
+
+  All fields must lie in [000, 999].
+*/
+TBool TimestampIsValid(
+  TTimestamp Ts
+)
+{
+  return
+    (Ts.KiloS <= MaxFieldValue) &&
+    (Ts.S <= MaxFieldValue) &&
+    (Ts.MilliS <= MaxFieldValue) &&
+    (Ts.MicroS <= MaxFieldValue);
 }
 
 /*
   Add timestamp
 
+  For field values over 999 returns "false".
   On overflow wraps around and returns "false".
 */
 TBool me_Timestamp::Add(
-  TTimestamp * Dest,
-  TTimestamp Ts
+  TTimestamp * A,
+  TTimestamp B
 )
 {
+  TUint_2 KiloS, S, MilliS, MicroS;
   TUint_1 Carry, NextCarry;
 
+  if (!TimestampIsValid(*A)) return false;
+  if (!TimestampIsValid(B)) return false;
+
+  KiloS = A->KiloS;
+  S = A->S;
+  MilliS = A->MilliS;
+  MicroS = A->MicroS;
+
   NextCarry = 0;
 
-  Dest->MicroS += Ts.MicroS;
+  MicroS += B.MicroS;
 
-  if (Dest->MicroS >= 1000)
+  if (MicroS > MaxFieldValue)
   {
-    Dest->MicroS -= 1000;
+    MicroS -= MaxFieldValue + 1;
     NextCarry = 1;
   }
 
   Carry = NextCarry;
   NextCarry = 0;
 
-  Dest->MilliS += Ts.MilliS + Carry;
+  MilliS += B.MilliS + Carry;
 
-  if (Dest->MilliS >= 1000)
+  if (MilliS > MaxFieldValue)
   {
-    Dest->MilliS -= 1000;
+    MilliS -= MaxFieldValue + 1;
     NextCarry = 1;
   }
 
   Carry = NextCarry;
   NextCarry = 0;
 
-  Dest->S += Ts.S + Carry;
+  S += B.S + Carry;
 
-  if (Dest->S >= 1000)
+  if (S > MaxFieldValue)
   {
-    Dest->S -= 1000;
+    S -= MaxFieldValue + 1;
     NextCarry = 1;
   }
 
   Carry = NextCarry;
   NextCarry = 0;
 
-  Dest->KiloS += Ts.KiloS + Carry;
+  KiloS += B.KiloS + Carry;
 
-  if (Dest->KiloS >= 1000)
+  if (KiloS > MaxFieldValue)
   {
-    Dest->KiloS -= 1000;
+    KiloS -= MaxFieldValue + 1;
     NextCarry = 1;
   }
 
   Carry = NextCarry;
+
+  A->KiloS = KiloS;
+  A->S = S;
+  A->MilliS = MilliS;
+  A->MicroS = MicroS;
 
   return (Carry == 0);
 }
@@ -110,56 +185,74 @@ TBool me_Timestamp::Add(
 /*
   Subtract timestamp
 
+  For field values over 999 returns "false".
   On underflow wraps around and returns "false".
 */
-TBool me_Timestamp::Subtract(TTimestamp * Dest, TTimestamp Ts)
+TBool me_Timestamp::Subtract(
+  TTimestamp * A,
+  TTimestamp B
+)
 {
+  TUint_2 KiloS, S, MilliS, MicroS;
   TUint_1 Borrow, NextBorrow;
 
+  if (!TimestampIsValid(*A)) return false;
+  if (!TimestampIsValid(B)) return false;
+
+  KiloS = A->KiloS;
+  S = A->S;
+  MilliS = A->MilliS;
+  MicroS = A->MicroS;
+
   NextBorrow = 0;
 
-  if (Dest->MicroS < Ts.MicroS)
+  if (MicroS < B.MicroS)
   {
-    Dest->MicroS += 1000;
+    MicroS += MaxFieldValue + 1;
     NextBorrow = 1;
   }
 
-  Dest->MicroS -= Ts.MicroS;
+  MicroS -= B.MicroS;
 
   Borrow = NextBorrow;
   NextBorrow = 0;
 
-  if (Dest->MilliS < Ts.MilliS + Borrow)
+  if (MilliS < TUint_2(B.MilliS + Borrow))
   {
-    Dest->MilliS += 1000;
+    MilliS += MaxFieldValue + 1;
     NextBorrow = 1;
   }
 
-  Dest->MilliS -= Ts.MilliS + Borrow;
+  MilliS -= B.MilliS + Borrow;
 
   Borrow = NextBorrow;
   NextBorrow = 0;
 
-  if (Dest->S < Ts.S + Borrow)
+  if (S < TUint_2(B.S + Borrow))
   {
-    Dest->S += 1000;
+    S += MaxFieldValue + 1;
     NextBorrow = 1;
   }
 
-  Dest->S -= Ts.S + Borrow;
+  S -= B.S + Borrow;
 
   Borrow = NextBorrow;
   NextBorrow = 0;
 
-  if (Dest->KiloS < Ts.KiloS + Borrow)
+  if (KiloS < TUint_2(B.KiloS + Borrow))
   {
-    Dest->KiloS += 1000;
+    KiloS += MaxFieldValue + 1;
     NextBorrow = 1;
   }
 
-  Dest->KiloS -= Ts.KiloS + Borrow;
+  KiloS -= B.KiloS + Borrow;
 
   Borrow = NextBorrow;
+
+  A->KiloS = KiloS;
+  A->S = S;
+  A->MilliS = MilliS;
+  A->MicroS = MicroS;
 
   return (Borrow == 0);
 }
@@ -167,4 +260,5 @@ TBool me_Timestamp::Subtract(TTimestamp * Dest, TTimestamp Ts)
 /*
   2025-03-02
   2025-03-03
+  2025-08-01
 */

@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-03-02
+  Last mod.: 2025-08-01
 */
 
 #include <me_Timestamp.h>
@@ -19,151 +19,141 @@ void PrintTs(
   Console.Print(Ts.KiloS);
   Console.Print(Ts.S);
   Console.Print(Ts.MilliS);
+  Console.Print(Ts.MicroS);
   Console.Write(")");
+}
+
+void Compare(
+  me_Timestamp::TTimestamp A,
+  me_Timestamp::TTimestamp B
+)
+{
+  PrintTs(A);
+
+  Console.Write(" ");
+
+  if (me_Timestamp::IsLess(A, B))
+    Console.Write("<");
+
+  if (me_Timestamp::IsGreater(A, B))
+    Console.Write(">");
+
+  if (me_Timestamp::AreEqual(A, B))
+    Console.Write("=");
+
+  Console.Write(" ");
+
+  PrintTs(B);
+
+  Console.EndLine();
 }
 
 void TestCompare()
 {
-  me_Timestamp::TTimestamp A, B;
-  TSint_1 CompareResult;
+  Console.Print("( Comparison");
+  Console.Indent();
 
-  {
-    A = { 0, 0, 0, 0 };
-    B = { 0, 0, 0, 0 };
-    CompareResult = me_Timestamp::Compare(A, B);
-    PrintTs(A);
-    Console.Print(CompareResult);
-    PrintTs(B);
-    Console.EndLine();
-  }
+  Compare({ 000, 000, 000, 000 }, { 000, 000, 000, 000 });
+  Compare({ 000, 999, 000, 000 }, { 000, 000, 000, 000 });
+  Compare({ 000, 000, 000, 000 }, { 000, 000, 001, 000 });
 
-  {
-    A = { 0, 999, 0, 0 };
-    B = { 0, 0, 0, 0 };
-    CompareResult = me_Timestamp::Compare(A, B);
-    PrintTs(A);
-    Console.Print(CompareResult);
-    PrintTs(B);
-    Console.EndLine();
-  }
+  Console.Unindent();
+  Console.Print(")");
+}
 
-  {
-    A = { 0, 0, 0, 0 };
-    B = { 0, 0, 1, 0 };
-    CompareResult = me_Timestamp::Compare(A, B);
-    PrintTs(A);
-    Console.Print(CompareResult);
-    PrintTs(B);
-    Console.EndLine();
-  }
+void Add(
+  me_Timestamp::TTimestamp A,
+  me_Timestamp::TTimestamp B
+)
+{
+  TBool IsOk;
+
+  PrintTs(A);
+
+  Console.Write(" + ");
+
+  PrintTs(B);
+
+  Console.Write(" = ");
+
+  IsOk = me_Timestamp::Add(&A, B);
+
+  PrintTs(A);
+
+  if (!IsOk)
+    Console.Write(" [!]");
+
+  Console.EndLine();
 }
 
 void TestAdd()
 {
-  me_Timestamp::TTimestamp A, B;
-  TBool IsWrapped;
+  Console.Print("( Addition");
+  Console.Indent();
 
-  {
-    A = { 0, 0, 0, 0 };
-    B = { 0, 0, 0, 0 };
-    PrintTs(A);
-    Console.Write("+");
-    PrintTs(B);
-    IsWrapped = !me_Timestamp::Add(&A, B);
-    Console.Print(IsWrapped);
-    PrintTs(A);
-    Console.EndLine();
-  }
+  // A + B = B + A  -- commutativity
+  Add({ 0, 0, 0, 1 }, { 0, 0, 0, 2 });
+  Add({ 0, 0, 0, 2 }, { 0, 0, 0, 1 });
 
-  {
-    A = { 0, 0, 1, 0 };
-    B = { 0, 0, 999, 0 };
-    PrintTs(A);
-    Console.Write("+");
-    PrintTs(B);
-    IsWrapped = !me_Timestamp::Add(&A, B);
-    Console.Print(IsWrapped);
-    PrintTs(A);
-    Console.EndLine();
-  }
+  // Carry
+  Add({ 0, 0, 1, 0 }, { 0, 0, 999, 0 });
 
-  {
-    A = { 500, 0, 1, 0 };
-    B = { 499, 999, 999, 0 };
-    PrintTs(A);
-    Console.Write("+");
-    PrintTs(B);
-    IsWrapped = !me_Timestamp::Add(&A, B);
-    Console.Print(IsWrapped);
-    PrintTs(A);
-    Console.EndLine();
-  }
+  // Overflow
+  Add({ 500, 0, 0, 2 }, { 499, 999, 999, 999 });
 
-  {
-    A = { 0, 1, 760, 0 };
-    B = { 0, 0, 1760, 0 };
-    PrintTs(A);
-    Console.Write("+");
-    PrintTs(B);
-    IsWrapped = !me_Timestamp::Add(&A, B);
-    Console.Print(IsWrapped);
-    PrintTs(A);
-    Console.EndLine();
-  }
+  // Max field values
+  Add({ 0, 0, 999, 0 }, { 0, 0, 999, 0 });
+
+  // Invalid field value
+  Add({ 0, 0, 0, 0 }, { 0, 0, 0, 1023 });
+
+  Console.Unindent();
+  Console.Print(")");
+}
+
+void Sub(
+  me_Timestamp::TTimestamp A,
+  me_Timestamp::TTimestamp B
+)
+{
+  TBool IsOk;
+
+  PrintTs(A);
+
+  Console.Write(" - ");
+
+  PrintTs(B);
+
+  Console.Write(" = ");
+
+  IsOk = me_Timestamp::Subtract(&A, B);
+
+  PrintTs(A);
+
+  if (!IsOk)
+    Console.Write(" [!]");
+
+  Console.EndLine();
 }
 
 void TestSub()
 {
-  me_Timestamp::TTimestamp A, B;
-  TBool IsWrapped;
+  Console.Print("( Subtraction");
+  Console.Indent();
 
-  {
-    A = { 0, 0, 0, 0 };
-    B = { 0, 0, 0, 0 };
-    PrintTs(A);
-    Console.Write("-");
-    PrintTs(B);
-    IsWrapped = !me_Timestamp::Subtract(&A, B);
-    Console.Print(IsWrapped);
-    PrintTs(A);
-    Console.EndLine();
-  }
+  // Borrow
+  Sub({ 0, 1, 0, 0 }, { 0, 0, 1, 0 });
+  // Borrow
+  Sub({ 0, 1, 0, 8 }, { 0, 0, 0, 9 });
+  // Underflow
+  Sub({ 0, 0, 1, 0 }, { 0, 0, 2, 0 });
+  // Underflow
+  Sub({ 499, 999, 999, 999 }, { 500, 0, 0, 2 });
+  // Correct
+  Sub({ 500, 0, 0, 2 }, { 499, 999, 999, 999 });
 
-  {
-    A = { 0, 1, 0, 0 };
-    B = { 0, 0, 1, 0 };
-    PrintTs(A);
-    Console.Write("-");
-    PrintTs(B);
-    IsWrapped = !me_Timestamp::Subtract(&A, B);
-    Console.Print(IsWrapped);
-    PrintTs(A);
-    Console.EndLine();
-  }
-
-  {
-    A = { 0, 0, 1, 0 };
-    B = { 0, 0, 999, 0 };
-    PrintTs(A);
-    Console.Write("-");
-    PrintTs(B);
-    IsWrapped = !me_Timestamp::Subtract(&A, B);
-    Console.Print(IsWrapped);
-    PrintTs(A);
-    Console.EndLine();
-  }
-
-  {
-    A = { 500, 0, 1, 0 };
-    B = { 499, 999, 999, 0 };
-    PrintTs(A);
-    Console.Write("-");
-    PrintTs(B);
-    IsWrapped = !me_Timestamp::Subtract(&A, B);
-    Console.Print(IsWrapped);
-    PrintTs(A);
-    Console.EndLine();
-  }
+  Console.Unindent();
+  Console.Print(")");
 }
 
 void setup()
@@ -184,4 +174,5 @@ void loop()
 
 /*
   2025-03-02
+  2025-08-01
 */

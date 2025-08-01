@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-03-02
+  Last mod.: 2025-08-02
 */
 
 #pragma once
@@ -11,19 +11,46 @@
 
 namespace me_Timestamp
 {
+  /*
+    Duration record
+
+    Size: 40 bits (5 bytes)
+    Capacity: 999 kilo-seconds (~11 days)
+    Granularity: 1 micro-second
+  */
   struct TTimestamp
   {
-    TUint_2 KiloS;
-    TUint_2 S;
-    TUint_2 MilliS;
-    TUint_2 MicroS;
+    TUint_2 KiloS : 10;
+    TUint_2 S : 10;
+    TUint_2 MilliS : 10;
+    TUint_2 MicroS : 10;
   };
 
-  TSint_1 Compare(TTimestamp A, TTimestamp B);
-  TBool Add(TTimestamp * Dest, TTimestamp Ts);
-  TBool Subtract(TTimestamp * Dest, TTimestamp Ts);
+  /*
+    Comparison
+
+    (
+      AreEqual
+      IsLess
+      IsGreater
+      IsLessOrEqual
+      IsGreaterOrEqual
+    ) - boolean functions for readable code
+  */
+  TBool AreEqual(TTimestamp A, TTimestamp B);
+  TBool IsLess(TTimestamp A, TTimestamp B);
+  TBool IsGreater(TTimestamp A, TTimestamp B);
+  TBool IsLessOrEqual(TTimestamp A, TTimestamp B);
+  TBool IsGreaterOrEqual(TTimestamp A, TTimestamp B);
+
+  /*
+    Add/subtract functions
+  */
+  TBool Add(TTimestamp * A, TTimestamp B);
+  TBool Subtract(TTimestamp * A, TTimestamp B);
 }
 
 /*
   2025-03-02
+  2025-08-02
 */
