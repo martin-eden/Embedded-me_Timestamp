@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-08-01
+  Last mod.: 2025-08-30
 */
 
 /*
@@ -11,6 +11,8 @@
 */
 
 #include <me_Timestamp.h>
+
+#include <me_BaseTypes.h>
 
 using namespace me_Timestamp;
 
