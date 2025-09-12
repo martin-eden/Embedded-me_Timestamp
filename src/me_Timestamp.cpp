@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-08-30
+  Last mod.: 2025-09-12
 */
 
 /*
@@ -43,12 +43,18 @@ TBool me_Timestamp::IsLess(
 {
   if (A.KiloS < B.KiloS)
     return true;
+  if (A.KiloS > B.KiloS)
+    return false;
 
   if (A.S < B.S)
     return true;
+  if (A.S > B.S)
+    return false;
 
   if (A.MilliS < B.MilliS)
     return true;
+  if (A.MilliS > B.MilliS)
+    return false;
 
   if (A.MicroS < B.MicroS)
     return true;
