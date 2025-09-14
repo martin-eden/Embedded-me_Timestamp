@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-08-02
+  Last mod.: 2025-09-14
 */
 
 #pragma once
@@ -15,7 +15,7 @@ namespace me_Timestamp
     Duration record
 
     Size: 40 bits (5 bytes)
-    Capacity: 999 kilo-seconds (~11 days)
+    Capacity: 1 mega-second (~11 days)
     Granularity: 1 micro-second
   */
   struct TTimestamp
