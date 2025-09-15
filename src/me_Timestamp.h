@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-09-14
+  Last mod.: 2025-09-15
 */
 
 #pragma once
@@ -25,6 +25,9 @@ namespace me_Timestamp
     TUint_2 MilliS : 10;
     TUint_2 MicroS : 10;
   };
+
+  // Zero constant
+  const TTimestamp Zero = { 0, 0, 0, 0 };
 
   /*
     Comparison
@@ -53,4 +56,5 @@ namespace me_Timestamp
 /*
   2025-03-02
   2025-08-02
+  2025-09-15
 */
