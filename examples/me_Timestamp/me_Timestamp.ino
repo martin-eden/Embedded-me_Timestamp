@@ -2,24 +2,20 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-08-29
+  Last mod.: 2025-09-19
 */
 
 #include <me_Timestamp.h>
 
 #include <me_BaseTypes.h>
 #include <me_Console.h>
+#include <me_DebugPrints.h>
 
 void PrintTs(
   me_Timestamp::TTimestamp Ts
 )
 {
-  Console.Write("(");
-  Console.Print(Ts.KiloS);
-  Console.Print(Ts.S);
-  Console.Print(Ts.MilliS);
-  Console.Print(Ts.MicroS);
-  Console.Write(")");
+  me_DebugPrints::PrintDuration(Ts);
 }
 
 void Compare(
@@ -29,8 +25,6 @@ void Compare(
 {
   PrintTs(A);
 
-  Console.Write(" ");
-
   if (me_Timestamp::IsLess(A, B))
     Console.Write("<");
 
@@ -39,8 +33,6 @@ void Compare(
 
   if (me_Timestamp::AreEqual(A, B))
     Console.Write("=");
-
-  Console.Write(" ");
 
   PrintTs(B);
 
@@ -69,18 +61,18 @@ void Add(
 
   PrintTs(A);
 
-  Console.Write(" + ");
+  Console.Write("+");
 
   PrintTs(B);
 
-  Console.Write(" = ");
+  Console.Write("=");
 
   IsOk = me_Timestamp::Add(&A, B);
 
   PrintTs(A);
 
   if (!IsOk)
-    Console.Write(" [!]");
+    Console.Write("[!]");
 
   Console.EndLine();
 }
@@ -119,18 +111,18 @@ void Sub(
 
   PrintTs(A);
 
-  Console.Write(" - ");
+  Console.Write("-");
 
   PrintTs(B);
 
-  Console.Write(" = ");
+  Console.Write("=");
 
   IsOk = me_Timestamp::Subtract(&A, B);
 
   PrintTs(A);
 
   if (!IsOk)
-    Console.Write(" [!]");
+    Console.Write("[!]");
 
   Console.EndLine();
 }
@@ -155,16 +147,23 @@ void TestSub()
   Console.Print(")");
 }
 
-void setup()
+void RunTests()
 {
-  Console.Init();
-  Console.Print("Init done.");
-
   TestCompare();
   TestAdd();
   TestSub();
+}
 
-  Console.Print("Done.");
+void setup()
+{
+  Console.Init();
+  Console.Print("( [me_Timestamp] test");
+
+  Console.Indent();
+  RunTests();
+  Console.Unindent();
+
+  Console.Print(") Done");
 }
 
 void loop()
@@ -174,4 +173,5 @@ void loop()
 /*
   2025-03-02
   2025-08-01
+  2025-09-19
 */
