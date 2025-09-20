@@ -2,28 +2,28 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-09-12
+  Last mod.: 2025-09-20
 */
 
 /*
-  It's sort of "long arithmetic": (0 0 123 456) means 123 milliseconds
-  and 456 microseconds.
+  It's sort of "long arithmetic": (0 0 123 456) means 123 milli-seconds
+  and 456 micro-seconds.
 */
 
-#include <me_Timestamp.h>
+#include <me_Duration.h>
 
 #include <me_BaseTypes.h>
 
-using namespace me_Timestamp;
+using namespace me_Duration;
 
 const TUint_2 MaxFieldValue = 999;
 
 /*
   True when timestamps are equal
 */
-TBool me_Timestamp::AreEqual(
-  TTimestamp A,
-  TTimestamp B
+TBool me_Duration::AreEqual(
+  TDuration A,
+  TDuration B
 )
 {
   return
@@ -36,9 +36,9 @@ TBool me_Timestamp::AreEqual(
 /*
   True when timestamp is less
 */
-TBool me_Timestamp::IsLess(
-  TTimestamp A,
-  TTimestamp B
+TBool me_Duration::IsLess(
+  TDuration A,
+  TDuration B
 )
 {
   if (A.KiloS < B.KiloS)
@@ -65,9 +65,9 @@ TBool me_Timestamp::IsLess(
 /*
   True when timestamp is greater
 */
-TBool me_Timestamp::IsGreater(
-  TTimestamp A,
-  TTimestamp B
+TBool me_Duration::IsGreater(
+  TDuration A,
+  TDuration B
 )
 {
   return IsLess(B, A);
@@ -76,9 +76,9 @@ TBool me_Timestamp::IsGreater(
 /*
   True when timestamp is less or equal
 */
-TBool me_Timestamp::IsLessOrEqual(
-  TTimestamp A,
-  TTimestamp B
+TBool me_Duration::IsLessOrEqual(
+  TDuration A,
+  TDuration B
 )
 {
   return
@@ -89,9 +89,9 @@ TBool me_Timestamp::IsLessOrEqual(
 /*
   True when timestamp is greater or equal
 */
-TBool me_Timestamp::IsGreaterOrEqual(
-  TTimestamp A,
-  TTimestamp B
+TBool me_Duration::IsGreaterOrEqual(
+  TDuration A,
+  TDuration B
 )
 {
   return
@@ -100,19 +100,19 @@ TBool me_Timestamp::IsGreaterOrEqual(
 }
 
 /*
-  Check that timestamp data is valid
+  Check that duration data is valid
 
   All fields must lie in [000, 999].
 */
-TBool TimestampIsValid(
-  TTimestamp Ts
+TBool DurationIsValid(
+  TDuration Dur
 )
 {
   return
-    (Ts.KiloS <= MaxFieldValue) &&
-    (Ts.S <= MaxFieldValue) &&
-    (Ts.MilliS <= MaxFieldValue) &&
-    (Ts.MicroS <= MaxFieldValue);
+    (Dur.KiloS <= MaxFieldValue) &&
+    (Dur.S <= MaxFieldValue) &&
+    (Dur.MilliS <= MaxFieldValue) &&
+    (Dur.MicroS <= MaxFieldValue);
 }
 
 /*
@@ -121,16 +121,16 @@ TBool TimestampIsValid(
   For field values over 999 returns "false".
   On overflow wraps around and returns "false".
 */
-TBool me_Timestamp::Add(
-  TTimestamp * A,
-  TTimestamp B
+TBool me_Duration::Add(
+  TDuration * A,
+  TDuration B
 )
 {
   TUint_2 KiloS, S, MilliS, MicroS;
   TUint_1 Carry, NextCarry;
 
-  if (!TimestampIsValid(*A)) return false;
-  if (!TimestampIsValid(B)) return false;
+  if (!DurationIsValid(*A)) return false;
+  if (!DurationIsValid(B)) return false;
 
   KiloS = A->KiloS;
   S = A->S;
@@ -191,21 +191,21 @@ TBool me_Timestamp::Add(
 }
 
 /*
-  Subtract timestamp
+  Subtract duration
 
   For field values over 999 returns "false".
   On underflow wraps around and returns "false".
 */
-TBool me_Timestamp::Subtract(
-  TTimestamp * A,
-  TTimestamp B
+TBool me_Duration::Subtract(
+  TDuration * A,
+  TDuration B
 )
 {
   TUint_2 KiloS, S, MilliS, MicroS;
   TUint_1 Borrow, NextBorrow;
 
-  if (!TimestampIsValid(*A)) return false;
-  if (!TimestampIsValid(B)) return false;
+  if (!DurationIsValid(*A)) return false;
+  if (!DurationIsValid(B)) return false;
 
   KiloS = A->KiloS;
   S = A->S;

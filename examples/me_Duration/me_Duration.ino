@@ -1,40 +1,35 @@
-// [me_Timestamp] test
+// [me_Duration] test
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-09-19
+  Last mod.: 2025-09-20
 */
 
-#include <me_Timestamp.h>
+#include <me_Duration.h>
 
 #include <me_BaseTypes.h>
 #include <me_Console.h>
 #include <me_DebugPrints.h>
 
-void PrintTs(
-  me_Timestamp::TTimestamp Ts
-)
-{
-  me_DebugPrints::PrintDuration(Ts);
-}
+using me_DebugPrints::PrintDuration;
 
 void Compare(
-  me_Timestamp::TTimestamp A,
-  me_Timestamp::TTimestamp B
+  me_Duration::TDuration A,
+  me_Duration::TDuration B
 )
 {
-  PrintTs(A);
+  PrintDuration(A);
 
-  if (me_Timestamp::IsLess(A, B))
+  if (me_Duration::IsLess(A, B))
     Console.Write("<");
 
-  if (me_Timestamp::IsGreater(A, B))
+  if (me_Duration::IsGreater(A, B))
     Console.Write(">");
 
-  if (me_Timestamp::AreEqual(A, B))
+  if (me_Duration::AreEqual(A, B))
     Console.Write("=");
 
-  PrintTs(B);
+  PrintDuration(B);
 
   Console.EndLine();
 }
@@ -53,23 +48,23 @@ void TestCompare()
 }
 
 void Add(
-  me_Timestamp::TTimestamp A,
-  me_Timestamp::TTimestamp B
+  me_Duration::TDuration A,
+  me_Duration::TDuration B
 )
 {
   TBool IsOk;
 
-  PrintTs(A);
+  PrintDuration(A);
 
   Console.Write("+");
 
-  PrintTs(B);
+  PrintDuration(B);
 
   Console.Write("=");
 
-  IsOk = me_Timestamp::Add(&A, B);
+  IsOk = me_Duration::Add(&A, B);
 
-  PrintTs(A);
+  PrintDuration(A);
 
   if (!IsOk)
     Console.Write("[!]");
@@ -103,23 +98,23 @@ void TestAdd()
 }
 
 void Sub(
-  me_Timestamp::TTimestamp A,
-  me_Timestamp::TTimestamp B
+  me_Duration::TDuration A,
+  me_Duration::TDuration B
 )
 {
   TBool IsOk;
 
-  PrintTs(A);
+  PrintDuration(A);
 
   Console.Write("-");
 
-  PrintTs(B);
+  PrintDuration(B);
 
   Console.Write("=");
 
-  IsOk = me_Timestamp::Subtract(&A, B);
+  IsOk = me_Duration::Subtract(&A, B);
 
-  PrintTs(A);
+  PrintDuration(A);
 
   if (!IsOk)
     Console.Write("[!]");
@@ -157,7 +152,7 @@ void RunTests()
 void setup()
 {
   Console.Init();
-  Console.Print("( [me_Timestamp] test");
+  Console.Print("( [me_Duration] test");
 
   Console.Indent();
   RunTests();

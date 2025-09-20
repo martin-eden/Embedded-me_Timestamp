@@ -44,8 +44,8 @@ clone [GetLibs][GetLibs] repo and run it's code to get all my stuff.
 * [My other embedded C++ libraries][Embedded]
 * [My other repositories][Repos]
 
-[Interface]: src/me_Timestamp.h
-[Implementation]: src/me_Timestamp.cpp
+[Interface]: src/me_Duration.h
+[Implementation]: src/me_Duration.cpp
 [Examples]: examples/
 
 [GetLibs]: https://github.com/martin-eden/Embedded-Framework-GetLibs

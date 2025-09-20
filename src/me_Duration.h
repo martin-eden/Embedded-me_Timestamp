@@ -9,7 +9,7 @@
 
 #include <me_BaseTypes.h>
 
-namespace me_Timestamp
+namespace me_Duration
 {
   /*
     Duration record
@@ -18,7 +18,7 @@ namespace me_Timestamp
     Capacity: 1 mega-second (~11 days)
     Granularity: 1 micro-second
   */
-  struct TTimestamp
+  struct TDuration
   {
     TUint_2 KiloS : 10;
     TUint_2 S : 10;
@@ -27,7 +27,7 @@ namespace me_Timestamp
   };
 
   // Zero constant
-  const TTimestamp Zero = { 0, 0, 0, 0 };
+  const TDuration Zero = { 0, 0, 0, 0 };
 
   /*
     Comparison
@@ -40,21 +40,22 @@ namespace me_Timestamp
       IsGreaterOrEqual
     ) - boolean functions for readable code
   */
-  TBool AreEqual(TTimestamp A, TTimestamp B);
-  TBool IsLess(TTimestamp A, TTimestamp B);
-  TBool IsGreater(TTimestamp A, TTimestamp B);
-  TBool IsLessOrEqual(TTimestamp A, TTimestamp B);
-  TBool IsGreaterOrEqual(TTimestamp A, TTimestamp B);
+  TBool AreEqual(TDuration A, TDuration B);
+  TBool IsLess(TDuration A, TDuration B);
+  TBool IsGreater(TDuration A, TDuration B);
+  TBool IsLessOrEqual(TDuration A, TDuration B);
+  TBool IsGreaterOrEqual(TDuration A, TDuration B);
 
   /*
     Add/subtract functions
   */
-  TBool Add(TTimestamp * A, TTimestamp B);
-  TBool Subtract(TTimestamp * A, TTimestamp B);
+  TBool Add(TDuration * A, TDuration B);
+  TBool Subtract(TDuration * A, TDuration B);
 }
 
 /*
   2025-03-02
   2025-08-02
   2025-09-15
+  2025-09-20 Renamed from Timestamp to Duration
 */
