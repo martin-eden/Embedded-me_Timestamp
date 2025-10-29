@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-09-20
+  Last mod.: 2025-10-28
 */
 
 /*
@@ -137,48 +137,29 @@ TBool me_Duration::Add(
   MilliS = A->MilliS;
   MicroS = A->MicroS;
 
-  NextCarry = 0;
+  Carry = 0;
 
-  MicroS += B.MicroS;
-
-  if (MicroS > MaxFieldValue)
-  {
-    MicroS -= MaxFieldValue + 1;
-    NextCarry = 1;
-  }
+  MicroS = MicroS + B.MicroS + Carry;
+  NextCarry = (MicroS > MaxFieldValue);
+  MicroS = MicroS % (MaxFieldValue + 1);
 
   Carry = NextCarry;
-  NextCarry = 0;
 
-  MilliS += B.MilliS + Carry;
-
-  if (MilliS > MaxFieldValue)
-  {
-    MilliS -= MaxFieldValue + 1;
-    NextCarry = 1;
-  }
+  MilliS = MilliS + B.MilliS + Carry;
+  NextCarry = (MilliS > MaxFieldValue);
+  MilliS = MilliS % (MaxFieldValue + 1);
 
   Carry = NextCarry;
-  NextCarry = 0;
 
-  S += B.S + Carry;
-
-  if (S > MaxFieldValue)
-  {
-    S -= MaxFieldValue + 1;
-    NextCarry = 1;
-  }
+  S = S + B.S + Carry;
+  NextCarry = (S > MaxFieldValue);
+  S = S % (MaxFieldValue + 1);
 
   Carry = NextCarry;
-  NextCarry = 0;
 
-  KiloS += B.KiloS + Carry;
-
-  if (KiloS > MaxFieldValue)
-  {
-    KiloS -= MaxFieldValue + 1;
-    NextCarry = 1;
-  }
+  KiloS = KiloS + B.KiloS + Carry;
+  NextCarry = (KiloS > MaxFieldValue);
+  KiloS = KiloS % (MaxFieldValue + 1);
 
   Carry = NextCarry;
 
@@ -212,48 +193,29 @@ TBool me_Duration::Subtract(
   MilliS = A->MilliS;
   MicroS = A->MicroS;
 
-  NextBorrow = 0;
+  Borrow = 0;
 
-  if (MicroS < B.MicroS)
-  {
-    MicroS += MaxFieldValue + 1;
-    NextBorrow = 1;
-  }
-
-  MicroS -= B.MicroS;
+  NextBorrow = (MicroS < (TUint_2) B.MicroS + Borrow);
+  MicroS = MicroS + (MaxFieldValue + 1) - B.MicroS - Borrow;
+  MicroS = MicroS % (MaxFieldValue + 1);
 
   Borrow = NextBorrow;
-  NextBorrow = 0;
 
-  if (MilliS < TUint_2(B.MilliS + Borrow))
-  {
-    MilliS += MaxFieldValue + 1;
-    NextBorrow = 1;
-  }
-
-  MilliS -= B.MilliS + Borrow;
+  NextBorrow = (MilliS < (TUint_2) B.MilliS + Borrow);
+  MilliS = MilliS + (MaxFieldValue + 1) - B.MilliS - Borrow;
+  MilliS = MilliS % (MaxFieldValue + 1);
 
   Borrow = NextBorrow;
-  NextBorrow = 0;
 
-  if (S < TUint_2(B.S + Borrow))
-  {
-    S += MaxFieldValue + 1;
-    NextBorrow = 1;
-  }
-
-  S -= B.S + Borrow;
+  NextBorrow = (S < (TUint_2) B.S + Borrow);
+  S = S + (MaxFieldValue + 1) - B.S - Borrow;
+  S = S % (MaxFieldValue + 1);
 
   Borrow = NextBorrow;
-  NextBorrow = 0;
 
-  if (KiloS < TUint_2(B.KiloS + Borrow))
-  {
-    KiloS += MaxFieldValue + 1;
-    NextBorrow = 1;
-  }
-
-  KiloS -= B.KiloS + Borrow;
+  NextBorrow = (KiloS < (TUint_2) B.KiloS + Borrow);
+  KiloS = KiloS + (MaxFieldValue + 1) - B.KiloS - Borrow;
+  KiloS = KiloS % (MaxFieldValue + 1);
 
   Borrow = NextBorrow;
 
@@ -269,4 +231,5 @@ TBool me_Duration::Subtract(
   2025-03-02
   2025-03-03
   2025-08-01
+  2025-10-28
 */
