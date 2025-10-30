@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-10-28
+  Last mod.: 2025-10-30
 */
 
 /*
@@ -228,8 +228,39 @@ TBool me_Duration::Subtract(
 }
 
 /*
+  Convert duration record to number of microseconds
+*/
+TUint_4 me_Duration::DurationToMicros(
+  me_Duration::TDuration Duration
+)
+{
+  return
+    (TUint_4) 1000000 * Duration.S +
+    (TUint_4) 1000 * Duration.MilliS +
+    (TUint_4) Duration.MicroS;
+}
+
+/*
+  Convert number of microseconds to duration record
+*/
+me_Duration::TDuration me_Duration::MicrosToDuration(
+  TUint_4 NumMicros
+)
+{
+  me_Duration::TDuration Result;
+
+  Result.KiloS = 0;
+  Result.S = NumMicros / 1000000;
+  Result.MilliS = NumMicros / 1000 % 1000;
+  Result.MicroS = NumMicros % 1000;
+
+  return Result;
+}
+
+/*
   2025-03-02
   2025-03-03
   2025-08-01
   2025-10-28
+  2025-10-30
 */

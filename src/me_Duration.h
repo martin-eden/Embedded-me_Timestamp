@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-09-15
+  Last mod.: 2025-10-30
 */
 
 #pragma once
@@ -51,6 +51,12 @@ namespace me_Duration
   */
   TBool Add(TDuration * A, TDuration B);
   TBool Subtract(TDuration * A, TDuration B);
+
+  /*
+    Import/export
+  */
+  TUint_4 DurationToMicros(TDuration Duration);
+  TDuration MicrosToDuration(TUint_4 NumMicros);
 }
 
 /*
@@ -58,4 +64,5 @@ namespace me_Duration
   2025-08-02
   2025-09-15
   2025-09-20 Renamed from Timestamp to Duration
+  2025-10-30 Duration to micros conversion
 */
